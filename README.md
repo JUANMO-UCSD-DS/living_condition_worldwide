@@ -14,12 +14,7 @@ The page combines five charts that examine:
 
 How have living conditions and development changed across countries from 1960 to 2020?
 
-## Team
 
-- Juan Mo
-- Nick Puckdee
-- Snigdha Tiwari
-- Anuradha Jaganathan
 
 ## Live project
 
