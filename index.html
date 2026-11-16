@@ -5,58 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Living Conditions 1960–2020</title>
   <!-- all paths are relative so it works on github pages from root or /docs -->
-  <link rel="stylesheet" href="css/style.css?v=10" />
+  <link rel="stylesheet" href="css/style.css?v=16" />
   <link rel="stylesheet" href="css/electricity.css">
   <link rel="stylesheet" href="css/aging.css">
   <link rel="stylesheet" href="css/research.css">
-  <script type="module" src="graphs/electricityChart.js"></script>
-  <script type="module" src="graphs/agingChart.js"></script>
-  <script type="module" src="./graphs/researchChart.js"></script>
+  <style>
+    /* chart picker: one button per chart, built with D3 at the bottom of the page */
+    .chart-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+    .chart-buttons button {
+      font: inherit; font-size: 14px; padding: 8px 14px; cursor: pointer;
+      border: 1px solid steelblue; border-radius: 18px; background: white; color: steelblue;
+    }
+    .chart-buttons button:hover { background: #eef4fa; }
+    .chart-buttons button.active { background: steelblue; color: white; }
+    .chart-buttons button:focus-visible { outline: 2px solid #e87924; outline-offset: 2px; }
+    section[data-chart][hidden] { display: none; }
+    section[data-chart] { margin-top: 16px; }
+  </style>
 </head>
 <body>
   <h1>How have living conditions and development changed across countries from 1960 to 2020?</h1>
   <p class="team">DSC 209R Project 3: Juan Mo, Nick Puckdee, Snigdha Tiwari, Anuradha Jaganathan</p>
 
+  <!-- D3 fills this with one button per chart -->
+  <nav class="chart-buttons" aria-label="Choose a chart"></nav>
+
   <main>
     <!-- chart 1 -->
-    <section class="fertility-section">
-      <h2>1. Family Size: Fertility Rate (1960–2019)</h2>
-      <p class="subtitle">The average number of children born per woman from 1960 to 2019 decreased from about 5 to 2.5 showing that family sizes are getting smaller.</p>
-      <div class="chart" id="fertility-chart"></div>
+    <section class="internet-section" data-chart="internet">
+      <h2>1. Internet Users by Country Income Level (~2000 vs ~2019)</h2>
+      <p class="subtitle">Internet use grew in every income group from 2000 to 2019, but only about 14% of people in low-income countries were online (2017, the latest data) compared with 89% in high-income countries.</p>
+      <div class="chart" id="internet-chart"></div>
+      <p class="note">Light blue = ~2000; dark blue = ~2019. Hover over a bar to see the exact percentage and year.</p>
       <p class="source">Source: World Bank</p>
     </section>
 
     <!-- chart 2 -->
-    <section class="internet-section">
-      <h2>2. Internet Users by Country Income Level (~2000 vs ~2019)</h2>
-      <p class="subtitle">Internet use grew in every income group from 2000 to 2019, but only about 14% of people in low-income countries were online (2017, the latest data) compared with 89% in high-income countries.</p>
-      <div class="chart" id="internet-chart"></div>
-      <p class="source">Source: World Bank</p>
-    </section>
-
-    <!-- chart 3 -->
-     <section class="electricity-section">
-      <h2>3. Electricity Access change (2000 vs 2019).</h2>
+     <section class="electricity-section" data-chart="electricity" hidden>
+      <h2>2. Electricity Access change (2000 vs 2019).</h2>
       <p class="subtitle">Electricity access expanded between 2000 and 2019, but large gaps remained across sub-Saharan Africa..</p>
       <div class="chart" id="electricity-chart"></div> 
       <p class="source">Source: World Bank</p>
      </section>
 
-     <!-- chart 4 -->
-    <section class="aging-section">
-      <h2>4. Population Aging (1960–2020)</h2>
-      <p class="subtitle">The proportion of people aged 65 and above has increased in most countries from 1960 to 2020, reflecting longer life expectancy and declining fertility rates.</p>
-      <div class="chart" id="aging-chart"></div>
-      <p class="source">Source: World Bank</p>
-    </section>
-
-
-    <!-- chart 5 -->
-    <section class="research-section">
-      <h2>5. Average Research and Development(R&D) Expenditure Across Countries</h2>
+    <!-- chart 3 -->
+    <section class="research-section" data-chart="research" hidden>
+      <h2>3. Average Research and Development(R&D) Expenditure Across Countries</h2>
       <p>Average R&D spending as a share of GDP rose overall from 1996 to 2018,
   with fluctuations along the way.</p>
       <div id="research-chart"></div>
+      <p class="source">Source: World Bank</p>
+    </section>
+
+    <!-- chart 4 -->
+    <section class="fertility-section" data-chart="fertility" hidden>
+      <h2>4. Family Size: Fertility Rate (1960–2019)</h2>
+      <p class="subtitle">The average number of children born per woman from 1960 to 2019 decreased from about 5 to 2.5 showing that family sizes are getting smaller.</p>
+      <div class="chart" id="fertility-chart"></div>
+      <p class="note">Drag across the chart to zoom into the selected years. Double-click the chart to zoom back out.</p>
+      <p class="source">Source: World Bank</p>
+      <p class="d3-note">Line chart with zoom: <a href="https://d3-graph-gallery.com/graph/line_brushZoom.html">https://d3-graph-gallery.com/graph/line_brushZoom.html</a></p>
+    </section>
+
+    <!-- chart 5 -->
+    <section class="aging-section" data-chart="aging" hidden>
+      <h2>5. Population Aging (1960–2020)</h2>
+      <p class="subtitle">The proportion of people aged 65 and above has increased in most countries from 1960 to 2020, reflecting longer life expectancy and declining fertility rates.</p>
+      <div class="chart" id="aging-chart"></div>
       <p class="source">Source: World Bank</p>
     </section>
  
@@ -65,19 +80,174 @@
     <section class="plan">
       <h2>Interactive chart plan</h2>
       <p>What users can click, filter, or change.</p>
-      <p><b>Graph 1 Interactive chart plan:</b> Users can choose a country or “World” from the dropdown to see how the number of children born per woman has changed over time. Hovering over the line will show the exact value for each year.</p>
-      <p><b>Graph 2 Interactive chart plan:</b> Users can hover over the bars to see the exact percentage of people using the internet and the year for each income group.</p>
-      <p><b>Graph 3 Interactive chart plan:</b> Users can hover over a country on either map to see its name, year, and percentage of people with electricity access.</p>
-      <p><b>Graph 4 Interactive chart plan:</b> Users will be able to hover over each dot to see the country name, year, and percentage of people aged 65 and above.</p>
-      <p><b>Graph 5 Interactive chart plan:</b> Users can hover over each dot to see the year, average R&D expenditure as a percentage of GDP.</p>
-    
+      <p><b>Graph 1 Interactive chart plan:</b> Users can hover over the bars to see the exact percentage of people using the internet and the year for each income group.</p>
+      <p><b>Graph 2 Interactive chart plan:</b> Users can hover over a country on either map to see its name, year, and percentage of people with electricity access.</p>
+      <p><b>Graph 3 Interactive chart plan:</b> Users can hover over each dot to see the year, average R&D expenditure as a percentage of GDP.</p>
+      <p><b>Graph 4 Interactive chart plan:</b> Users can drag to zoom into specific years on the fertility chart.</p>
+      <p><b>Graph 5 Interactive chart plan:</b> Users will be able to hover over each dot to see the country name, year, and percentage of people aged 65 and above.</p>
+    </section>
+
+    <!-- project write-up -->
+    <section class="plan" aria-labelledby="writeup-title">
+      <h2 id="writeup-title">Project Write-up</h2>
+
+      <h3>Motivation</h3>
+      <p>
+        Our project asks how living conditions and development changed across
+        countries from 1960 to 2020. We explored five indicators: internet use,
+        electricity access, research and development spending, fertility,
+        and population aging. These indicators show different aspects of
+        development, including access to technology, infrastructure,
+        investment, and demographic change. Together, the charts let viewers
+        explore changes over time and differences between countries and
+        income groups.
+      </p>
+
+      <h3>Design Decisions and Interactions</h3>
+      <p>
+        For internet use, we chose grouped bars to compare income groups
+        around 2000 and 2019. Placing the bars beside each other makes the
+        differences easy to compare. The vertical axis runs from 0% to 100%,
+        while light and dark blue distinguish the earlier and later periods.
+        Hovering reveals the exact percentage and observation year.
+      </p>
+      <p>
+        For electricity access, we used two world maps with the same color
+        scale to show geographic differences in 2000 and 2019. Light cream
+        represents lower access, dark purple represents higher access, and
+        gray represents missing data. Country tooltips provide exact values.
+        Synchronized zooming and panning help viewers examine smaller
+        countries while keeping both years aligned.
+      </p>
+      <p>
+        We used line charts for R&amp;D spending and fertility because both
+        views focus on change over time. Hovering over an R&amp;D point
+        reveals its year, average expenditure, and number of reporting
+        countries or economies. On the fertility chart, viewers can drag
+        across a period to zoom in and double-click to return to the full
+        range. Its vertical scale stays fixed during zooming, and a dashed
+        line provides a reference at approximately 2.1 births per woman.
+      </p>
+      <p>
+        For population aging, we combined box plots with individual country
+        dots. Each box summarizes the middle 50% of observations, and its
+        median line shows the center of the distribution. The dots preserve
+        country differences that a summary alone would hide. Hovering
+        reveals country values, while brushing highlights selected countries
+        across all four years. Orange separates selected countries from the
+        blue background points.
+      </p>
+
+      <h3>Data Preparation and Limitations</h3>
+      <p>
+        We used World Bank indicators from the
+        <a href="https://github.com/light-and-salt/World-Bank-Data-by-Indicators">dataset linked in the assignment</a>.
+        Data preparation selects the relevant indicators and years, removes
+        missing or invalid observations, and saves smaller CSV files for
+        the charts. Country comparisons exclude regional and income-group
+        aggregates. The internet chart intentionally uses income-group
+        aggregates and a World comparison, while fertility uses the World
+        Bank's World series.
+      </p>
+      <p>
+        Coverage differs between indicators. The overall research question
+        spans 1960–2020, while each view uses the available observations:
+        fertility covers 1960–2019; population aging compares 1960, 1980,
+        2000, and 2019; electricity compares 2000 and 2019; and R&amp;D
+        covers 1996–2018. For internet use, we selected the closest available
+        observation within three years of each target year. The low-income
+        comparison therefore uses 2017 instead of 2019.
+      </p>
+      <p>
+        R&amp;D values are equally weighted averages of countries and
+        economies with available observations. Reporting coverage changes
+        between years, so changes in the average can partly reflect
+        differences in coverage. Missing electricity observations appear
+        in gray. These views describe patterns across different indicators;
+        they do not establish causal relationships between them.
+      </p>
+
+      <h3>Development Process</h3>
+      <p>
+        We began with five exploratory charts and then added interactions.
+        Our group discussed connecting country selection on the world map
+        to the fertility chart. The final version uses navigation buttons
+        to bring the five views together under one research question while
+        keeping their different measures and scales readable.
+      </p>
+      <p>
+        Snigdha established the initial project structure and charts, then
+        added internet and aging interactions and synchronized map zooming.
+        Juan contributed the electricity maps and the R&amp;D and
+        population-aging charts, including their data preparation.
+        Anuradha completed the fertility brush zoom and chart navigation
+        buttons. Nick prepared the checkpoint video, tested the
+        visualizations, checked requirements, and is handling the final
+        write-up and submission.
+      </p>
+      <p>
+        Estimated team effort was about 30 hours, with developing
+        and integrating chart interactions taking the most time.
+      </p>
+      <p>
+        The application uses D3.js with HTML, CSS, and static data files
+        and is hosted on GitHub Pages.
+      </p>
+    </section>
   </main>
 
   <!-- d3 v7, pinned so it doesn't change on us -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
   <!-- main.js has to load first, then the charts -->
   <script src="graphs/main.js?v=10"></script>
-  <script src="graphs/fertilityChart.js?v=10"></script>
+  <script src="graphs/fertilityChart.js?v=15"></script>
   <script src="graphs/internetChart.js?v=10"></script>
+  <script>
+    // one button per chart, built with a D3 data join.
+    const CHARTS = [
+      { key: "internet", label: "1. Internet" },
+      { key: "electricity", label: "2. Electricity", module: "./graphs/electricityChart.js" },
+      { key: "research", label: "3. R&D", module: "./graphs/researchChart.js" },
+      { key: "fertility", label: "4. Fertility" },
+      { key: "aging", label: "5. Aging", module: "./graphs/agingChart.js" },
+    ];
+
+    const buttons = d3.select(".chart-buttons")
+      .selectAll("button")
+      .data(CHARTS)
+      .join("button")
+      .attr("type", "button")
+      .text((d) => d.label)
+      .on("click", (event, d) => show(d.key));
+
+    function show(key) {
+      const chart = CHARTS.find((c) => c.key === key) || CHARTS[0];
+
+      buttons
+        .classed("active", (d) => d === chart)
+        .attr("aria-pressed", (d) => d === chart);
+
+      d3.selectAll("section[data-chart]")
+        .property("hidden", function () { return this.dataset.chart !== chart.key; });
+
+      if (chart.module) {
+        // runs the chart's D3 code once; the browser caches the import after that
+        import(chart.module).catch((err) => {
+          console.error(err);
+          d3.select(`#${chart.key}-chart`).html("")
+            .append("p").attr("class", "error").text("couldn't load this chart");
+        });
+      } else if (window.App && App.data) {
+        // fertility and internet size themselves from their container's width,
+        App.charts.forEach((c) => c.draw(App.data));
+      }
+
+      history.replaceState(null, "", "#" + chart.key);
+    }
+
+    // open the chart named in the URL (e.g. index.html#aging), or the first one
+    show(location.hash.slice(1));
+    window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+  </script>
 </body>
 </html>
